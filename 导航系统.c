@@ -1,10 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include <graphics.h>              // 引用图形库头文件
+#include <conio.h>
+#include <windows.h>				//用到了定时函数sleep()
+#include <math.h>
 
 #define MaxVertexNum 100
 #define MAXSIZE 255
-#define INF 2147483647  // 表示一个非常大的数，约等于无穷大
+#define INF (~(0x1<<31))        // 最大值(即0X7FFFFFFF) 表示一个非常大的数，约等于无穷大
 
 //-------------------------------------the part of base operation function------------------------------------
 //定义顶点的数据类型
@@ -146,7 +150,7 @@ int visitFunc(MGraph* G, int v)
 	name = G->Vex[v].name;
 	imformation = G->Vex[v].information;
 	building = G->Vex[v].buildings;
-	printf("%s %s %s", name, imformation, building);
+	printf("%s %s %s", &name, &imformation, &building);
 	return 1;
 }
 
@@ -260,7 +264,7 @@ void dijkstra(MGraph G, int v0, int prev[], int dist[])
 	{
 		// 寻找当前的最小路径
 		// 也就是，在未获取最短路径的顶点中，找到vs最近的顶点k
-		min = NULL;
+		min = INF;
 		for (j = 0; j < G.vexnum; j++)
 		{
 			if (visited[j] == 0 && dist[j] < min)
@@ -286,29 +290,61 @@ void dijkstra(MGraph G, int v0, int prev[], int dist[])
 	}
 
 	// 打印最终结果
-	printf_s("dijkstra(%c):\n", G.Vex[v0]);
+	printf_s("dijkstra(%c):\n", (char)(G.Vex[v0]).name);
 	for (i = 0; i < G.vexnum; i++)
 	{
-		printf_s("shortest(%c, %c) = %d\n", G.Vex[v0], G.Vex[i], dist[i]);
+		printf_s("shortest(%c, %c) = %d\n", (char)(G.Vex[v0].name), (char)(G.Vex[i].name), dist[i]);
 	}
 }
 
 //-----------------------------the functional function ----------------------------------
 //开始界面
-void StartMenu()
+void StartMenu(MGraph G)
 {
+	int key;
 	printf_s("Welcome to use the nevigation system of Nanjing Normal University\n");
 	
 	while (1)
 	{
-		printf_s("you can chose what to do next:\n");
-		printf_s("1.search what ");
+		printf_s("You can chose what to do next(inpout the number):\n");
+		printf_s("1.Search the position of a point\n");
+		printf_s("2.Show you all the points\n");
+		printf_s("3.Help you find the shortest path between two points\n");
+		printf_s("4.Finish!\n");
+		
+		scanf_s("%d", &key);
+		switch (key)
+		{
+		case 1:
+			search(G);
+		case 2:
+			break;
+		default:
+			exit(-1);
+			break;
+		}
+
+
 	}
 	
 }
 
+void search(MGraph G)
+{
+	char PointName[MAXSIZE];
+	printf_s("Please input the name of point:\n");
+	gets(PointName);
+}
 
-
+void navigation(MGraph G)
+{
+	char start[10];
+	char end[10];
+	printf_s("Please input the name of start:\n");
+	gets(start);
+	printf_s("Please input the name of end:\n");
+	gets(end);
+}
 
 //---------------------------------- main function -------------------------------------
 int main()
