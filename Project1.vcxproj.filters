@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\chapter1">
+      <UniqueIdentifier>{f65c05b2-a6a5-41a1-b000-4081b7eab20f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\chapter2">
+      <UniqueIdentifier>{4287ecb6-d140-4304-80fb-9607e8da0bf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\review">
+      <UniqueIdentifier>{1bd53c8a-44a0-4480-a4fd-844ea988b6eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\chapter3">
+      <UniqueIdentifier>{bda5e211-aa60-4fd0-9838-70ef1a665fa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\chapter4">
+      <UniqueIdentifier>{0b5d82a5-ffd3-4871-99c3-0ccb89b8955c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\chapter5">
+      <UniqueIdentifier>{3d5a8f6b-4d50-4c44-a304-50fc39b47c4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\chapter6">
+      <UniqueIdentifier>{4212bcf3-fa87-499c-8fbb-826ed97ca898}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\chapter7">
+      <UniqueIdentifier>{a7177196-1eed-42c0-b5ae-299fa7880801}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="time_complexity.c">
+      <Filter>源文件\chapter1</Filter>
+    </ClCompile>
+    <ClCompile Include="定义顺序表.c">
+      <Filter>源文件\chapter2</Filter>
+    </ClCompile>
+    <ClCompile Include="test1.c">
+      <Filter>源文件\review</Filter>
+    </ClCompile>
+    <ClCompile Include="链表.c">
+      <Filter>源文件\review</Filter>
+    </ClCompile>
+    <ClCompile Include="结构体.c">
+      <Filter>源文件\review</Filter>
+    </ClCompile>
+    <ClCompile Include="函数与结构体.c">
+      <Filter>源文件\review</Filter>
+    </ClCompile>
+    <ClCompile Include="线性表的顺序存储实现和操作.c">
+      <Filter>源文件\chapter2</Filter>
+    </ClCompile>
+    <ClCompile Include="线性表的链式存储实现和操作.c">
+      <Filter>源文件\chapter2</Filter>
+    </ClCompile>
+    <ClCompile Include="广义表与多重链表.c">
+      <Filter>源文件\chapter2</Filter>
+    </ClCompile>
+    <ClCompile Include="多重链表表示矩阵.c">
+      <Filter>源文件\chapter2</Filter>
+    </ClCompile>
+    <ClCompile Include="建栈.c">
+      <Filter>源文件\chapter3</Filter>
+    </ClCompile>
+    <ClCompile Include="队列.c">
+      <Filter>源文件\chapter3</Filter>
+    </ClCompile>
+    <ClCompile Include="顺序栈操作.c">
+      <Filter>源文件\chapter3</Filter>
+    </ClCompile>
+    <ClCompile Include="Anti-Polish.c">
+      <Filter>源文件\chapter3</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix_transposition.c">
+      <Filter>源文件\chapter4</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix_multiplication.c">
+      <Filter>源文件\chapter4</Filter>
+    </ClCompile>
+    <ClCompile Include="八皇后问题.c">
+      <Filter>源文件\chapter3</Filter>
+    </ClCompile>
+    <ClCompile Include="string.c">
+      <Filter>源文件\chapter5</Filter>
+    </ClCompile>
+    <ClCompile Include="string_test.c">
+      <Filter>源文件\chapter5</Filter>
+    </ClCompile>
+    <ClCompile Include="model_chatgpt.c">
+      <Filter>源文件\chapter5</Filter>
+    </ClCompile>
+    <ClCompile Include="kmp_chat.c">
+      <Filter>源文件\chapter5</Filter>
+    </ClCompile>
+    <ClCompile Include="创建树.c">
+      <Filter>源文件\chapter6</Filter>
+    </ClCompile>
+    <ClCompile Include="求树的深度.c">
+      <Filter>源文件\chapter6</Filter>
+    </ClCompile>
+    <ClCompile Include="huffman_init.c">
+      <Filter>源文件\chapter6</Filter>
+    </ClCompile>
+    <ClCompile Include="遍历树.c">
+      <Filter>源文件\chapter6</Filter>
+    </ClCompile>
+    <ClCompile Include="图.c">
+      <Filter>源文件\chapter7</Filter>
+    </ClCompile>
+    <ClCompile Include="导航系统.c">
+      <Filter>源文件\chapter7</Filter>
+    </ClCompile>
+    <ClCompile Include="navigation_case.cpp">
+      <Filter>源文件\chapter7</Filter>
+    </ClCompile>
+    <ClCompile Include="领接表.c">
+      <Filter>源文件\chapter7</Filter>
+    </ClCompile>
+    <ClCompile Include="关联矩阵.c">
+      <Filter>源文件\chapter7</Filter>
+    </ClCompile>
+    <ClCompile Include="dijkstra.c">
+      <Filter>源文件\chapter7</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
