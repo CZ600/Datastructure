@@ -1,14 +1,15 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include <graphics.h>              // 引用图形库头文件
-#include <conio.h>
 #include <windows.h>				//用到了定时函数sleep()
 #include <math.h>
 
 #define MaxVertexNum 100
 #define MAXSIZE 255
 #define INF (~(0x1<<31))        // 最大值(即0X7FFFFFFF) 表示一个非常大的数，约等于无穷大
+
+//访问标志数组
+int visited[MaxVertexNum];
 
 //-------------------------------------the part of base operation function------------------------------------
 //定义顶点的数据类型
@@ -19,23 +20,118 @@ typedef struct Vertextype
 	char buildings[MAXSIZE];
 }Vertextype;
 
-//边的权值
-typedef int InfoType;
 
 //交通工具数据类型
 typedef struct vehicle
 {
 	char name[MAXSIZE];
 	int speed;
-};
+}vehicle;
 
 //定义领接矩阵
 typedef struct MGraph
 {
 	Vertextype Vex[MaxVertexNum];  // 顶点表
-	InfoType Edge[3][3];   // 邻接矩阵
+	int Edge[3][3];   // 邻接矩阵
 	int vexnum, arcnum;  // 图当前的顶点树和弧数
 }MGraph;
+
+// 栈
+typedef struct
+{
+	int data[MAXSIZE];
+	int top;
+}SqStack;
+
+//------------------------------------- declaration ----------------------------------------------------------
+int LocateVex(MGraph G, Vertextype u);
+int FirstAdjVex(MGraph G, Vertextype v);
+int NextAdjVex(MGraph G, Vertextype v, Vertextype w);
+Vertextype GetVex(MGraph G, int v);
+void create_Graph(MGraph* G, Vertextype pointData[], int edgeData[][3]);
+int visitFunc(MGraph* G, int v);
+void DFS(MGraph* G, int v, int visited[]);
+void DFStraveler(MGraph G, int x);
+void BFS(MGraph G, int v);
+void dijkstra(MGraph G, int v0, int prev[], int dist[]);
+void color(short x);
+void StartMenu(MGraph G);
+void search(MGraph G);
+void navigation(MGraph G);
+void Init_SeqStack(SqStack** s);
+int Empty_SeqStack(SqStack* s);
+void Push_Stack(SqStack* s, int x);
+void Pop_SeqStack(SqStack* s, int* x);
+void Top_SeqStack(SqStack* s, int* x);
+void Output_SeqStack(SqStack* s);
+void filereadNUM(int mapdata[3][3]);
+
+/*
+链栈的节点的定义
+*/
+
+// 栈初始化
+void Init_SeqStack(SqStack** s)
+{
+	// 开辟一块空间，并将该空间的地址赋给s
+	*s = (SqStack*)malloc(sizeof(SqStack));
+	(*s)->top = -1;
+}
+
+// 判栈为空
+int Empty_SeqStack(SqStack* s)
+{
+	if (s->top == -1)
+		return 1;
+	else
+		return 0;
+}
+
+// 入栈
+void Push_Stack(SqStack* s, int x)
+{
+	if (s->top == MAXSIZE - 1)
+		printf("Stack is full!\n");
+	else
+	{
+		s->top++;
+		s->data[s->top] = x;
+	}
+}
+
+// 出栈
+void Pop_SeqStack(SqStack* s, int* x)
+{
+	if (s->top == -1)
+		printf("栈为空!\n");
+	else
+	{
+		*x = s->data[s->top];
+		s->top--;
+	}
+}
+
+// 取栈顶元素
+void Top_SeqStack(SqStack* s, int* x)
+{
+	if (s->top == -1)
+		printf("栈为空!\n");
+	else
+	{
+		*x = s->data[s->top];
+		printf("出栈成功！\n");
+	}
+}
+// 输出
+void Output_SeqStack(SqStack* s)
+{
+	SqStack* w;
+	int i;
+	printf("栈中的元素有：");
+	for (i = s->top; i >= 0; i--)
+		printf("%d ", s->data[i]);
+	printf("\n");
+}
 
 // 查询顶点位置
 int LocateVex(MGraph G, Vertextype u)
@@ -94,7 +190,7 @@ Vertextype GetVex(MGraph G, int v)
 }
 
 //存储领接关系
-void create_Graph(MGraph* G, Vertextype pointData[], InfoType edgeData[][3])
+void create_Graph(MGraph* G, Vertextype pointData[], int edgeData[][3])
 {
 	int numV = 0, numE = 0;
 
@@ -156,9 +252,6 @@ int visitFunc(MGraph* G, int v)
 
 //第一个顶点
 
-//访问标志数组
-int visited[MaxVertexNum];
-
 //DFS
 // 从第v个顶点出发递归地深度优先遍历图G。算法7.5
 void DFS(MGraph* G, int v, int visited[])
@@ -179,7 +272,6 @@ void DFS(MGraph* G, int v, int visited[])
 void DFStraveler(MGraph G, int x)
 {
 	int w, i;
-	Vertextype w1, v1;
 	// visited 中全部未访问
 	for (i = 0; i < G.vexnum; i++)
 	{
@@ -297,13 +389,36 @@ void dijkstra(MGraph G, int v0, int prev[], int dist[])
 	}
 }
 
+
 //-----------------------------the functional function ----------------------------------
+// 颜色设置函数
+/*
+color table
+0 = 黑色       8 = 灰色
+1 = 蓝色       9 = 淡蓝色
+2 = 绿色       A = 淡绿色
+3 = 浅绿色     B = 淡浅绿色
+4 = 红色       C = 淡红色
+5 = 紫色       D = 淡紫色
+6 = 黄色       E = 淡黄色
+7 = 白色       F = 亮白色
+
+*/
+void color(short x)
+{
+	if (x >= 0 && x <= 15)//参数在0-15的范围颜色
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);	//只有一个参数，改变字体颜色
+	else//默认的颜色白色
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+}
+
 //开始界面
 void StartMenu(MGraph G)
 {
 	int key;
+	color(4);  // red
 	printf_s("Welcome to use the nevigation system of Nanjing Normal University\n");
-	
+
 	while (1)
 	{
 		printf_s("You can chose what to do next(inpout the number):\n");
@@ -311,7 +426,6 @@ void StartMenu(MGraph G)
 		printf_s("2.Show you all the points\n");
 		printf_s("3.Help you find the shortest path between two points\n");
 		printf_s("4.Finish!\n");
-		
 		scanf_s("%d", &key);
 		switch (key)
 		{
@@ -319,55 +433,146 @@ void StartMenu(MGraph G)
 			search(G);
 		case 2:
 			break;
+		case 3:
+			break;
+		case 4:
+			break;
 		default:
 			exit(-1);
 			break;
 		}
-
-
 	}
-	
 }
 
 void search(MGraph G)
 {
 	char PointName[MAXSIZE];
+	char name[MAXSIZE], buildings[MAXSIZE], imformation[MAXSIZE];
+	system("cls");			//清屏
 	printf_s("Please input the name of point:\n");
 	gets(PointName);
+	for (int i = 0; i < G.vexnum; i++)
+	{
+		if (G.Vex[i].name == PointName)
+		{
+			strcpy(name, G.Vex[i].name);
+			strcpy(buildings, G.Vex[i].buildings);
+			strcpy(imformation, G.Vex->information);
+
+			printf_s("%s, %s, %s", name, buildings, imformation);
+		}
+	}
 }
 
 void navigation(MGraph G)
 {
 	char start[10];
 	char end[10];
+	system("cls");			//清屏
 	printf_s("Please input the name of start:\n");
 	gets(start);
 	printf_s("Please input the name of end:\n");
 	gets(end);
 }
 
+void filereadNUM(int mapdata[3][3])
+{
+	int i, j;
+	int k = 0;
+	int count = 0;  //统计文件中字符个数
+	int sum_row;  //统计文件中字符个数
+	int flag = 0;  //用于暂时将文件内容保存
+	FILE* fp;    //文件指针
+	FILE* fp1;
+	fp = fopen("datanumber.txt", "r");   //打开文件，只读，argv[1]代表从命令行输入的文件名称，即运行.exe程序时输入的第二个参数
+	fp1 = fopen("datanumber.txt", "r");   //再次打开文件，（第一次打开文件用于统计文件的行数，即数据的个数）用于将文件内容保存到指针数组里
+	// fp2 = fopen("test1.txt", "w");   //打开文件，只写，用于将数组内容重新保存到另一个文件中
+	if (fp == NULL)    //打开文件失败
+	{
+		printf("File cannot open! ");
+		//exit;  
+		return 0;
+	}
+	i = 0;
+	while (!feof(fp))  //读文件，直到文件末尾
+	{
+		fscanf(fp, "%d %d %d", &mapdata[i][0], &mapdata[i][1], &mapdata[i][2]);
+		i++;
+		count++;
+	}
+	k = i;
+	sum_row = count + 1; //加上文件最后一行，即为文件总的行数
+	printf("文件行数为：%d", sum_row);  //统计文件行数，因为每行只有一个数，所以即统计文件中有多少个数
+	printf("\n");
+
+	printf("文件内容为：\n");
+
+
+	for (i = 0; i < k; i++)  //循环打印保存到指针数组中的数据
+	{
+		for (j = 0; j < k; j++)
+		{
+			printf("%d\t", mapdata[i][j]);  //打印
+		}
+		printf("\n");
+
+	}
+	fclose(fp);  //关闭文件，释放指向文件的指针
+	fclose(fp1);  //关闭文件，释放指向文件的指针
+
+
+}
+
+void filereadCHR(Vertextype data[])
+{
+	int i, j;
+	FILE* fp;
+	fp = fopen("imformation", 'r');
+	if (fp == NULL)    //打开文件失败
+	{
+		printf("File cannot open! ");
+		//exit;  
+		return 0;
+	}
+	i = 0;
+	while (!feof(fp))
+	{
+		fscanf(fp, "%s %s %s", data[i].buildings, data[i].information, data[i].name);
+		i++;
+	}
+
+}
+
 //---------------------------------- main function -------------------------------------
 int main()
 {
-	MGraph Campus;
+	SqStack NodeData;
+	MGraph CampusData;
+	MGraph* campus = &CampusData;
+	campus = (MGraph*)malloc(sizeof(MGraph));
+	Init_SeqStack(&NodeData);
+	int i = 0;
+	int mapdata[3][3];
+
 	//存储数据
-	Vertextype points[100] =
+	Vertextype points[100];
+	
+		/*
+		=
 	{
 		{ "学行楼","北区主要教学楼","学行楼" },
 		{ "四号门","通往仙林宾馆，出校，北区，东区","仙林宾馆" },
 		{ "东南门","东区主要出口，通往北区、网球场、东区住宿区","网球场 住宿区"}
 	};
-
-	//定义领接关系表
-	InfoType edgedata[3][3] =
-	{
-		{0, 625, INF},
-		{625, 0, 475},
-		{INF, 475, 0}
-	};
+		*/
+		
+	filereadNUM(mapdata);
 
 	//数据存储图的初始化
-	create_Graph(&Campus, points, edgedata);
+	create_Graph(campus, points, edgedata);
 
+	StartMenu(*campus);
+
+	free(campus);
 	return 0;
 }
